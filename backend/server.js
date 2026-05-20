@@ -1,16 +1,18 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
 import messageRoutes from "./routes/message.routes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
-
-dotenv.config();
+import config from "./config/config.js";
+import { createServer } from "http";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const httpServer = createServer(app)
+const PORT = config.PORT;
+
+
 
 connectDB();
 
@@ -27,6 +29,6 @@ app.use("/api/messages", messageRoutes);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
