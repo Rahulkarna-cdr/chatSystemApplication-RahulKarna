@@ -106,11 +106,6 @@ export const newToken = async (req, res) => {
     if (!refreshToken) {
       return res.status(403).json({ message: "Invalid Token" });
     }
-    const refTokenInDb = await RefreshToken.findOne({ token: refreshToken });
-    if (!refTokenInDb) {
-      return res.status(403).json({ message: "Refresh token not found" });
-    }
-
     jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET, (err, user) => {
       //checks if the Refresh Token is expired or not
       if (err) {
@@ -119,6 +114,10 @@ export const newToken = async (req, res) => {
           .json({ message: "Refresh token is expired or invalid" });
       }
     });
+    const refTokenInDb = await RefreshToken.findOne({ token: refreshToken });
+    if (!refTokenInDb) {
+      return res.status(403).json({ message: "Refresh token not found" });
+    }
 
     const payload = { id: refTokenInDb.userId };
     const newAccessToken = generateAccessToken(payload);
