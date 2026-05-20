@@ -1,16 +1,14 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
+import config from "./config.js";
 
-dotenv.config();
+const MONGODB_URI= config.MONGODB_URI;
 
 const connectDB = async () => {
   try {
-    const uri =
-      process.env.MONGO_URI || "mongodb://localhost:27017/chat-system";
-    await mongoose.connect();
-    console.log("MongoDB connected");
+    await mongoose.connect(MONGODB_URI);
+    console.log("Successfully connected to MongoDB database");
   } catch (error) {
-    console.error("MongoDB connection error:", error);
+    console.error("Failed to connect to MongoDB database:", error);
     process.exit(1);
   }
 };

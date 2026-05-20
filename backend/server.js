@@ -6,13 +6,20 @@ import chatRoutes from "./routes/chat.routes.js";
 import messageRoutes from "./routes/message.routes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import config from "./config/config.js";
-import { createServer } from "http";
+// import { createServer } from "http";
 
 const app = express();
-const httpServer = createServer(app)
+// const httpServer = createServer(app)
 const PORT = config.PORT;
 
-
+// const io = new Server(httpServer,{
+//     cors:{
+//         origin:"*",
+//         methods:["GET", "POST"],
+//         credentials:true
+//     }
+// })
+// // initateSocket(io)
 
 connectDB();
 
@@ -29,6 +36,6 @@ app.use("/api/messages", messageRoutes);
 
 app.use(errorHandler);
 
-httpServer.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
