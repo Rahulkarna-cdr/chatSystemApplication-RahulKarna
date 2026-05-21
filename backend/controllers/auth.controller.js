@@ -16,7 +16,7 @@ const generateRefreshToken = (payload) => {
   });
 };
 
-export const registerUser = async (req, res) => {
+export const registerUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
@@ -54,11 +54,11 @@ export const registerUser = async (req, res) => {
       refreshToken,
     });
   } catch (err) {
-    return res.status(500).json({ message: "internal server error" });
+    next(err);
   }
 };
 
-export const loginUser = async (req, res) => {
+export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -95,24 +95,22 @@ export const loginUser = async (req, res) => {
       refreshToken,
     });
   } catch (err) {
-    return res.status(500).json({ message: "internal server error" });
+    next(err);
   }
 };
 
 //getting a new Access Token when expired
-export const newToken = async (req, res) => {
+export const newToken = async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
       return res.status(403).json({ message: "Invalid Token" });
     }
-    jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET, (err, user) => {
-      //checks if the Refresh Token is expired or not
-      if (err) {
-        return res
-          .status(403)
-          .json({ message: "Refresh token is expired or invalid" });
-      }
+    await new Promise((resolve, reject) => {
+      jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) reject(err);
+        else resolve(user);
+      });
     });
     const refTokenInDb = await RefreshToken.findOne({ token: refreshToken });
     if (!refTokenInDb) {
@@ -127,11 +125,11 @@ export const newToken = async (req, res) => {
       accessToken: newAccessToken,
     });
   } catch (err) {
-    return res.status(500).json({ message: "internal server error" });
+    next(err);
   }
 };
 
-export const logoutUser = async (req, res) => {
+export const logoutUser = async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
@@ -146,6 +144,6 @@ export const logoutUser = async (req, res) => {
     }
     return res.status(200).json({ message: "Logout successful" });
   } catch (err) {
-    return res.status(500).json({ message: "internal server error" });
+    next(err);
   }
 };

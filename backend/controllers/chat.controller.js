@@ -37,14 +37,14 @@ export const createChat = async (req, res, next) => {
 
     return res.status(201).json(fullChat);
 
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
 export const getChats = async (req, res, next) => {
   try {
-    Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+    await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
       .populate("users", "-password")
       .populate("latestMessage")
       .sort({ updatedAt: -1 })
@@ -55,7 +55,7 @@ export const getChats = async (req, res, next) => {
         });
         res.status(200).send(results);
       });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };

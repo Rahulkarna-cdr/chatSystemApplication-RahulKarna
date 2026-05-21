@@ -9,14 +9,14 @@ export const authenticateToken = (req, res, next) => {
         }
         jwt.verify(token, config.ACCESS_TOKEN_SECRET, (err, user) => {
             if(err){
-                return res.status(403).json({message: "Invalid Token"})
+                return next(err)
             }
-            req.user = user
+            req.user = { _id: user.id }
             next()
         })
 
     }catch(err){
-        return res.status(500).json({message: "internal server error"})
+        next(err)
     }
  
 };

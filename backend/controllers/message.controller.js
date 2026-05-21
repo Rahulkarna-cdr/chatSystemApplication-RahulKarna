@@ -31,8 +31,8 @@ export const sendMessage = async (req, res, next) => {
     });
 
     res.json(message);
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -43,7 +43,7 @@ export const getMessages = async (req, res, next) => {
       .populate("chat");
 
     res.json(messages);
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
