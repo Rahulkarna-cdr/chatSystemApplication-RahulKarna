@@ -1,6 +1,6 @@
 import User from "../models/User.model.js";
 import RefreshToken from "../models/RefreshToken.models.js";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 
